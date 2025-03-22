@@ -27,7 +27,7 @@ public class MensajeProtocolo implements Serializable {
      */
     public MensajeProtocolo(Primitiva primitiva, String idCola) {
         this.primitiva = primitiva;
-        this.
+        this.idCola = idCola;
         validarNumeroParametros();
     }
 
@@ -35,12 +35,13 @@ public class MensajeProtocolo implements Serializable {
      * Constructor que inicializa un mensaje con una primitiva y dos parámetros.
      *
      * @param primitiva la primitiva del protocolo
-     * @param parametro1 el primer parámetro del mensaje
-     * @param parametro2 el segundo parámetro del mensaje
+     * @param mensaje el primer parámetro del mensaje
+     * @param idCola el segundo parámetro del mensaje
      */
     public MensajeProtocolo(Primitiva primitiva, String mensaje, String idCola) {
         this.primitiva = primitiva;
-        this.parametros = new String[]{parametro1, parametro2};
+        this.mensaje = mensaje;
+        this.idCola = idCola;
         validarNumeroParametros();
     }
 
