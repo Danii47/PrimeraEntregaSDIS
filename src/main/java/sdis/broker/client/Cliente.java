@@ -17,6 +17,7 @@ public class Cliente {
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
              BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in))) {
 
+
             String username, password;
             MensajeProtocolo connectionMessage;
 
