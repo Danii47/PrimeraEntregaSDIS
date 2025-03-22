@@ -15,7 +15,7 @@ public interface ServidorPrimitives {
             Set.of(
                     Primitiva.XAUTH,
                     Primitiva.MSG,
-                    Primitiva.BARCODE,
+                    Primitiva.BADCODE,
                     Primitiva.STATE,
                     Primitiva.NOAUTH,
                     Primitiva.ERROR

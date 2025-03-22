@@ -12,7 +12,7 @@ public interface ClientPrimitives {
             Set.of(
                     Primitiva.READQ,
                     Primitiva.DELETEQ,
-                    Primitiva.BARCODE
+                    Primitiva.BADCODE
             );
 
     public static final Set<Primitiva> PRIMITIVES_2_ARGS =

@@ -4,45 +4,61 @@ import java.io.Serializable;
 
 public class MensajeProtocolo implements Serializable {
     private final Primitiva primitiva;
-    private final String idCola;
     private final String mensaje;
+    private final String idCola;
 
-    /**
-     * Constructor que inicializa un mensaje con una primitiva y sin parámetros.
-     *
-     * @param primitiva la primitiva del protocolo
-     */
-    public MensajeProtocolo(Primitiva primitiva) {
+    // STATE, INFO, ADDED, DELETED y EMPTY
+    public MensajeProtocolo(Primitiva primitiva) throws MalMensajeProtocoloException {
+
+        if (primitiva == null) {
+            throw new MalMensajeProtocoloException("Primitiva no puede ser null");
+        }
+        if (!ClientPrimitives.PRIMITIVES_0_ARGS.contains(primitiva) || !ServidorPrimitives.PRIMITIVES_0_ARGS.contains(primitiva)) {
+            throw new MalMensajeProtocoloException("Primitiva " + primitiva + " no es válida");
+        }
+
         this.primitiva = primitiva;
-        this.idCola = getIdCola();
-        this.mensaje = getMensaje();
-        validarNumeroParametros();
+        this.idCola = null;
+        this.mensaje = null;
     }
 
-    /**
-     * Constructor que inicializa un mensaje con una primitiva y un parámetro.
-     *
-     * @param primitiva la primitiva del protocolo
-     * @param idCola el parámetro del mensaje
-     */
-    public MensajeProtocolo(Primitiva primitiva, String idCola) {
+    // READQ, DELETEQ, BADCODE, XAUTH, MSG, BADCODE, STATE y NOAUTH, ERROR
+    public MensajeProtocolo(Primitiva primitiva, String mensaje) throws MalMensajeProtocoloException {
+
+        if (primitiva == null) {
+            throw new MalMensajeProtocoloException("Primitiva no puede ser null");
+        }
+        if (mensaje == null) {
+            throw new MalMensajeProtocoloException("Mensaje no puede ser null");
+        }
+        if (!ClientPrimitives.PRIMITIVES_1_ARGS.contains(primitiva) || !ServidorPrimitives.PRIMITIVES_1_ARGS.contains(primitiva)) {
+            throw new MalMensajeProtocoloException("Primitiva " + primitiva + " no es válida");
+        }
+
         this.primitiva = primitiva;
-        this.idCola = idCola;
-        validarNumeroParametros();
+        this.mensaje = mensaje;
+        this.idCola = null;
     }
 
-    /**
-     * Constructor que inicializa un mensaje con una primitiva y dos parámetros.
-     *
-     * @param primitiva la primitiva del protocolo
-     * @param mensaje el primer parámetro del mensaje
-     * @param idCola el segundo parámetro del mensaje
-     */
-    public MensajeProtocolo(Primitiva primitiva, String mensaje, String idCola) {
+    // XAUTH y ADDMSG
+    public MensajeProtocolo(Primitiva primitiva, String mensaje, String idCola) throws MalMensajeProtocoloException {
+
+        if (primitiva == null) {
+            throw new MalMensajeProtocoloException("Primitiva no puede ser null");
+        }
+        if (mensaje == null) {
+            throw new MalMensajeProtocoloException("Mensaje no puede ser null");
+        }
+        if (idCola == null) {
+            throw new MalMensajeProtocoloException("idCola no puede ser null");
+        }
+        if (!ClientPrimitives.PRIMITIVES_2_ARGS.contains(primitiva)) {
+            throw new MalMensajeProtocoloException("Primitiva " + primitiva + " no es válida");
+        }
+
         this.primitiva = primitiva;
         this.mensaje = mensaje;
         this.idCola = idCola;
-        validarNumeroParametros();
     }
 
 

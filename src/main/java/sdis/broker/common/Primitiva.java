@@ -16,7 +16,7 @@ public enum Primitiva {
     DELETED,    // S→C: Confirma que se ha eliminado una cola con éxito
     NOAUTH,     // S→C: Error de autenticación o permisos insuficientes
     ERROR,      // S→C: Error genérico del sistema (conexiones máximas, blacklist)
-    BARCODE;    // C→S: Cliente envía código incorrecto en el protocolo
+    BADCODE;    // C→S: Cliente envía código incorrecto en el protocolo
                 // S→C: Servidor indica que se recibió un intercambio ilegal de primitivas
 }
 

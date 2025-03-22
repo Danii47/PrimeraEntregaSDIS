@@ -17,6 +17,7 @@ public class Auth {
             System.exit(-1);
         }
 
+
         String host = args[0];
         String mensaje = args[1];
 
