@@ -4,44 +4,44 @@ import java.io.Serializable;
 
 public class MensajeProtocolo implements Serializable {
     private final Primitiva primitiva;
-    private String idCola;
+    private final String idCola;
     private final String mensaje;
 
-    public MensajeProtocolo(Primitiva p, String idCola, String mensaje) throws MalMensajeProtocoloException {
-        if (p == Primitiva.PUSH) {
-            this.primitiva = p;
-            this.mensaje = mensaje;
-            this.idCola = idCola;
-        } else {
-            throw new MalMensajeProtocoloException("error");
-        }
+    /**
+     * Constructor que inicializa un mensaje con una primitiva y sin parámetros.
+     *
+     * @param primitiva la primitiva del protocolo
+     */
+    public MensajeProtocolo(Primitiva primitiva) {
+        this.primitiva = primitiva;
+        this.idCola = getIdCola();
+        this.mensaje = getMensaje();
+        validarNumeroParametros();
     }
 
-
-    public MensajeProtocolo(Primitiva p, String mensaje) throws MalMensajeProtocoloException {
-        if (p == Primitiva.HELLO || p == Primitiva.PULL_OK) {
-            this.idCola = null;
-            this.mensaje = mensaje;
-
-        } else if (p == Primitiva.PULL_WAIT || p == Primitiva.PULL_NOWAIT) {
-            this.idCola = mensaje;
-            this.mensaje = null;
-        } else {
-            throw new MalMensajeProtocoloException("error");
-        }
-        this.primitiva = p;
+    /**
+     * Constructor que inicializa un mensaje con una primitiva y un parámetro.
+     *
+     * @param primitiva la primitiva del protocolo
+     * @param idCola el parámetro del mensaje
+     */
+    public MensajeProtocolo(Primitiva primitiva, String idCola) {
+        this.primitiva = primitiva;
+        this.
+        validarNumeroParametros();
     }
 
-
-    public MensajeProtocolo(Primitiva p) throws MalMensajeProtocoloException {
-        if (p == Primitiva.PUSH_OK || p == Primitiva.NOTUNDERSTAND || p == Primitiva.NOTHING) {
-            this.primitiva = p;
-            this.mensaje = null;
-            this.idCola = null;
-
-        } else {
-            throw new MalMensajeProtocoloException("error");
-        }
+    /**
+     * Constructor que inicializa un mensaje con una primitiva y dos parámetros.
+     *
+     * @param primitiva la primitiva del protocolo
+     * @param parametro1 el primer parámetro del mensaje
+     * @param parametro2 el segundo parámetro del mensaje
+     */
+    public MensajeProtocolo(Primitiva primitiva, String mensaje, String idCola) {
+        this.primitiva = primitiva;
+        this.parametros = new String[]{parametro1, parametro2};
+        validarNumeroParametros();
     }
 
 
