@@ -13,10 +13,10 @@ public class MensajeProtocolo implements Serializable {
     public MensajeProtocolo(Primitiva primitiva) throws MalMensajeProtocoloException {
 
         if (primitiva == null)
-            throw new MalMensajeProtocoloException("Primitiva no puede ser null");
+            throw new MalMensajeProtocoloException(Strings.PROTOCOL_PRIMITIVE_NOT_NULL);
 
         if (!ClientPrimitives.PRIMITIVES_0_ARGS.contains(primitiva) && !ServidorPrimitives.PRIMITIVES_0_ARGS.contains(primitiva))
-            throw new MalMensajeProtocoloException("Primitiva " + primitiva + " no es válida");
+            throw new MalMensajeProtocoloException(Strings.INVALID_PRIMITIVE(primitiva));
 
 
         this.primitiva = primitiva;
@@ -28,13 +28,13 @@ public class MensajeProtocolo implements Serializable {
     public MensajeProtocolo(Primitiva primitiva, String mensaje) throws MalMensajeProtocoloException {
 
         if (primitiva == null)
-            throw new MalMensajeProtocoloException("Primitiva no puede ser null");
+            throw new MalMensajeProtocoloException(Strings.PROTOCOL_PRIMITIVE_NOT_NULL);
 
         if (mensaje == null)
-            throw new MalMensajeProtocoloException("Mensaje no puede ser null");
+            throw new MalMensajeProtocoloException(Strings.PROTOCOL_MESSAGE_NOT_NULL);
 
         if (!ClientPrimitives.PRIMITIVES_1_ARGS.contains(primitiva) && !ServidorPrimitives.PRIMITIVES_1_ARGS.contains(primitiva))
-            throw new MalMensajeProtocoloException("Primitiva " + primitiva + " no es válida");
+            throw new MalMensajeProtocoloException(Strings.INVALID_PRIMITIVE(primitiva));
 
         this.primitiva = primitiva;
 
@@ -51,16 +51,16 @@ public class MensajeProtocolo implements Serializable {
     public MensajeProtocolo(Primitiva primitiva, String idCola, String mensaje) throws MalMensajeProtocoloException {
 
         if (primitiva == null)
-            throw new MalMensajeProtocoloException("Primitiva no puede ser null");
+            throw new MalMensajeProtocoloException(Strings.PROTOCOL_PRIMITIVE_NOT_NULL);
 
         if (mensaje == null)
-            throw new MalMensajeProtocoloException("Mensaje no puede ser null");
+            throw new MalMensajeProtocoloException(Strings.PROTOCOL_MESSAGE_NOT_NULL);
 
         if (idCola == null)
-            throw new MalMensajeProtocoloException("idCola no puede ser null");
+            throw new MalMensajeProtocoloException(Strings.PROTOCOL_QUEUE_ID_NOT_NULL);
 
         if (!ClientPrimitives.PRIMITIVES_2_ARGS.contains(primitiva))
-            throw new MalMensajeProtocoloException("Primitiva " + primitiva + " no es válida");
+            throw new MalMensajeProtocoloException(Strings.INVALID_PRIMITIVE(primitiva));
 
 
         this.primitiva = primitiva;
@@ -84,8 +84,12 @@ public class MensajeProtocolo implements Serializable {
     @Override
     public String toString() {
         switch (primitiva) {
-            case MSG:
             case STATE:
+                if (mensaje == null)
+                    return primitiva.toString();
+                else
+                    return primitiva + ":" + mensaje;
+            case MSG:
             case NOTAUTH:
             case ERROR:
             case BADCODE:
@@ -94,6 +98,10 @@ public class MensajeProtocolo implements Serializable {
             case DELETEQ:
                 return primitiva + ":" + idCola;
             case XAUTH:
+                if (idCola == null)
+                    return primitiva + ":" + mensaje;
+                else
+                    return primitiva + ":" + idCola + ":" + mensaje;
             case ADDMSG:
                 return primitiva + ":" + idCola + ":" + mensaje;
             default:

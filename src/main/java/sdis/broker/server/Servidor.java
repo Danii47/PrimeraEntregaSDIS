@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Servidor {
-    private static final int DEFAULT_PORT = 47014;
+    private static final int DEFAULT_PORT = Strings.DEFAULT_PORT;
     private static final int MAX_CLIENTS = 5;
     private static final int MAX_CONNECTIONS = 3;
     private static final int MAX_LOGIN_ATTEMPTS = 2;

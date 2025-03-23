@@ -1,5 +1,6 @@
 package sdis.broker.client;
 
+import sdis.broker.common.Strings;
 import sdis.broker.common.customexceptions.MalMensajeProtocoloException;
 import sdis.broker.common.MensajeProtocolo;
 import sdis.broker.common.Primitiva;
@@ -39,7 +40,7 @@ public class ClienteInteractivo extends Cliente {
 
 
                 if (requestStrings.length > 3) {
-                    System.err.println("Número inválido de argumentos");
+                    System.err.println(Strings.INVALID_ARGUMENTS_LENGTH);
                     continue;
                 }
 
@@ -57,7 +58,7 @@ public class ClienteInteractivo extends Cliente {
                 } catch (IllegalArgumentException e) {
                     System.err.println("Primitiva no válida");
                 } catch (MalMensajeProtocoloException e) {
-                    System.err.println("Mensaje protocolo mal formado");
+                    System.err.println(e.getMessage());
                 }
             }
 

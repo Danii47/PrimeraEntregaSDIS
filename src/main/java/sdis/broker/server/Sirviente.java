@@ -59,7 +59,7 @@ public class Sirviente implements Runnable {
             }
 
         } catch (IOException e) {
-            System.err.println(Strings.CLOSED_CONNECTION);
+            System.err.println(Strings.CLOSED_CONNECTION((loggedUser != null) ? loggedUser.getName() : "No authenticated"));
         } catch (ClassNotFoundException e) {
             System.err.println(Strings.CLASS_NOT_FOUND_MESSAGE);
         } finally {

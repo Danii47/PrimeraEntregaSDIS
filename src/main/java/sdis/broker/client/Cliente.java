@@ -11,8 +11,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class Cliente {
-    public static final String DEFAULT_HOST = "localhost";
-    public static final int DEFAULT_PORT = 47014;
+    public static final String DEFAULT_HOST = Strings.DEFAULT_HOST;
+    public static final int DEFAULT_PORT = Strings.DEFAULT_PORT;
 
     private final Socket socket;
     private final ObjectOutputStream out;
@@ -29,7 +29,7 @@ public class Cliente {
 
         if (response == null) {
             sendBadCode(null);
-            throw new WelcomeException("Mensaje de bienvenida NO recibido.");
+            throw new WelcomeException(Strings.WELCOME_NOT_RECEIVED);
         }
 
         if (response.getPrimitiva() == Primitiva.ERROR)
@@ -61,6 +61,9 @@ public class Cliente {
     }
 
     public MensajeProtocolo sendXAuth(MensajeProtocolo request) throws IOException, ClassNotFoundException, UnexpectedResponseException {
+        if (request.getIdCola() == null || request.getMensaje() == null)
+            throw new MalMensajeProtocoloException(Strings.CLIENT_XAUTH_PARAMETERS);
+
         out.writeObject(request);
 
         MensajeProtocolo response = (MensajeProtocolo) in.readObject();
@@ -113,6 +116,9 @@ public class Cliente {
     }
 
     public MensajeProtocolo sendState(MensajeProtocolo request) throws IOException, ClassNotFoundException {
+        if (request.getMensaje() != null || request.getIdCola() != null)
+            throw new MalMensajeProtocoloException(Strings.CLIENT_STATE_PARAMETERS);
+
         out.writeObject(request);
 
         MensajeProtocolo response = (MensajeProtocolo) in.readObject();
