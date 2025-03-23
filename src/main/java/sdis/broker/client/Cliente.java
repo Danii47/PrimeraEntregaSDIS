@@ -24,7 +24,7 @@ public class Cliente {
         in = new ObjectInputStream(socket.getInputStream());
     }
 
-    public MensajeProtocolo waitWelcome() throws IOException, ClassNotFoundException {
+    public MensajeProtocolo waitWelcome() throws IOException, ClassNotFoundException, WelcomeException {
         MensajeProtocolo response = (MensajeProtocolo) in.readObject();
 
         if (response == null) {

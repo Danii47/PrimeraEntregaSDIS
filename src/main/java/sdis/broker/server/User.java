@@ -1,9 +1,9 @@
 package sdis.broker.server;
 
 public class User {
-    private String name;
-    private String password;
-    private Status status;
+    private final String name;
+    private final String password;
+    private final Status status;
 
     public User(String name, String password, Status status) {
         if (name == null || password == null || status == null)

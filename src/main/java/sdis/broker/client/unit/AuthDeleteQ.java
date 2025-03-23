@@ -3,6 +3,7 @@ package sdis.broker.client.unit;
 import sdis.broker.client.Cliente;
 import sdis.broker.common.Primitiva;
 import sdis.broker.common.MensajeProtocolo;
+import sdis.broker.common.customexceptions.WelcomeException;
 
 import java.io.IOException;
 
@@ -45,6 +46,8 @@ public class AuthDeleteQ extends Cliente {
             System.err.println("Error de E/S en los objetos.\n" + e.getMessage());
         } catch (ClassNotFoundException e) {
             System.err.println("Error al convertir el objeto recibido en MensajeProtocolo.\n" + e.getMessage());
+        } catch (WelcomeException e) {
+            System.err.println(e.getMessage());
         }
     }
 }

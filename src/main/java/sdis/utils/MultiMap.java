@@ -6,12 +6,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class MultiMap<K, T> {
 
-    private final ConcurrentMap<K, ConcurrentLinkedQueue<T>> map = new ConcurrentHashMap<K, ConcurrentLinkedQueue<T>>();
+    private final ConcurrentMap<K, ConcurrentLinkedQueue<T>> map = new ConcurrentHashMap<>();
 
     public void push(K clave, T valor) {
         java.util.Queue<T> cola = map.get(clave);
         if (cola == null) {
-            ConcurrentLinkedQueue<T> nueva = new ConcurrentLinkedQueue<T>();
+            ConcurrentLinkedQueue<T> nueva = new ConcurrentLinkedQueue<>();
             ConcurrentLinkedQueue<T> previa = map.putIfAbsent(clave, nueva);
             cola = (previa == null) ? nueva : previa;
         }
