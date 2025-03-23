@@ -24,7 +24,7 @@ public class State extends Cliente {
         try {
             State client = new State();
 
-            System.out.println("< " + client.waitWelcome().getMensaje());
+            System.out.println("< " + client.waitWelcome().toString());
 
             MensajeProtocolo request = new MensajeProtocolo(associatedPrimitive);
             System.out.println("> " + request);

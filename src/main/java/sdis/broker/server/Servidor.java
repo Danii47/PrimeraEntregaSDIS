@@ -12,10 +12,14 @@ import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Servidor {
-    private static final int PORT = 12345;
+    private static final int DEFAULT_PORT = 47014;
     private static final int MAX_CLIENTS = 5;
+    private static final int MAX_CONNECTIONS = 3;
+    private static final int MAX_LOGIN_ATTEMPTS = 2;
 
     public static ConcurrentHashMap<String, User> initAuthStorage() {
         ConcurrentHashMap<String, User> authStorage = new ConcurrentHashMap<>();
@@ -31,12 +35,14 @@ public class Servidor {
     public static void main(String[] args) {
         ExecutorService executor = Executors.newFixedThreadPool(MAX_CLIENTS);
         MultiMap<String, String> messageQueueMap = new MultiMap<>();
-        BlacklistManager connectionManager = new BlacklistManager(3);
-        BlacklistManager failsLoginManager = new BlacklistManager(2);
+        BlacklistManager connectionManager = new BlacklistManager(MAX_CONNECTIONS);
+        BlacklistManager failsLoginManager = new BlacklistManager(MAX_LOGIN_ATTEMPTS);
         ConcurrentHashMap<String, User> authStorage = initAuthStorage();
+        AtomicInteger uploadMessages = new AtomicInteger();
+        AtomicInteger downloadMessages = new AtomicInteger();
 
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("----Server Started----");
+        try (ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT)) {
+            System.out.println(Strings.SERVER_STARTED);
 
             Thread mainServer = new Thread(() -> {
                 String clientIP;
@@ -45,16 +51,16 @@ public class Servidor {
 
                 try {
                     while (true) {
-                        System.out.println("----Server Waiting For Client----");
+                        System.out.println(Strings.SERVER_WAITING_CLIENT);
 
                         clientSocket = serverSocket.accept();
                         clientIP = clientSocket.getInetAddress().getHostAddress();
 
                         try {
                             int connectionCounter = connectionManager.registerAttempt(clientIP);
-                            System.out.println("[BM] (connections) for IP /" + clientIP + " = " + connectionCounter);
+                            System.out.println(Strings.NEW_CONNECTION(clientIP, connectionCounter));
 
-                            sirviente = new Sirviente(clientSocket, authStorage, messageQueueMap, connectionManager, failsLoginManager);
+                            sirviente = new Sirviente((ThreadPoolExecutor) executor, clientSocket, authStorage, messageQueueMap, connectionManager, failsLoginManager, uploadMessages, downloadMessages);
                             executor.execute(sirviente);
 
                         } catch (IllegalStateException e) {
@@ -75,11 +81,8 @@ public class Servidor {
 
             mainServer.start();
             mainServer.join();
-        } catch (IOException e) {
-            System.err.println("Cerrando socket de cliente");
-            e.printStackTrace(System.err);
-        } catch (InterruptedException e) {
-            System.err.println("Cerrando socket de cliente");
+        } catch (IOException | InterruptedException e) {
+            System.err.println(Strings.CLOSING_SOCKET);
         }
     }
 }

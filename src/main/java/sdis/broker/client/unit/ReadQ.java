@@ -24,7 +24,7 @@ public class ReadQ extends Cliente {
         try {
             ReadQ client = new ReadQ();
 
-            System.out.println("< " + client.waitWelcome().getMensaje());
+            System.out.println("< " + client.waitWelcome().toString());
 
             String key = args[0];
 

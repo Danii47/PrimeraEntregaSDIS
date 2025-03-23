@@ -8,8 +8,12 @@ import sdis.utils.MultiMap;
 import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Sirviente implements Runnable {
+    private final ThreadPoolExecutor executor;
     private final Socket clientSocket;
     private final ConcurrentHashMap<String, User> authStorage;
     private final MultiMap<String, String> messageQueueMap;
@@ -17,9 +21,12 @@ public class Sirviente implements Runnable {
     private final BlacklistManager failsLoginManager;
     private final ObjectOutputStream out;
     private final ObjectInputStream in;
+    private final AtomicInteger uploadMessages;
+    private final AtomicInteger downloadMessages;
     private User loggedUser;
 
-    public Sirviente(Socket socket, ConcurrentHashMap<String, User> authStorage, MultiMap<String, String> messageQueueMap, BlacklistManager connectionsManager, BlacklistManager failsLoginManager) throws IOException {
+    public Sirviente(ThreadPoolExecutor executor, Socket socket, ConcurrentHashMap<String, User> authStorage, MultiMap<String, String> messageQueueMap, BlacklistManager connectionsManager, BlacklistManager failsLoginManager, AtomicInteger uploadMessages, AtomicInteger downloadMessages) throws IOException {
+        this.executor = executor;
         this.clientSocket = socket;
         this.authStorage = authStorage;
         this.messageQueueMap = messageQueueMap;
@@ -27,6 +34,9 @@ public class Sirviente implements Runnable {
         this.failsLoginManager = failsLoginManager;
         this.out = new ObjectOutputStream(clientSocket.getOutputStream());
         this.in = new ObjectInputStream(clientSocket.getInputStream());
+        this.uploadMessages = uploadMessages;
+        this.downloadMessages = downloadMessages;
+        this.loggedUser = null;
     }
 
     public String getClientIP() {
@@ -95,6 +105,7 @@ public class Sirviente implements Runnable {
         if (!messageQueueMap.containsKey(request.getIdCola()) && loggedUser.getStatus() != Status.ADMIN)
             return new MensajeProtocolo(Primitiva.NOTAUTH, Strings.NOT_ADMIN);
 
+        uploadMessages.incrementAndGet();
         messageQueueMap.push(request.getIdCola(), request.getMensaje());
         return new MensajeProtocolo(Primitiva.ADDED);
     }
@@ -106,6 +117,7 @@ public class Sirviente implements Runnable {
         if (!messageQueueMap.containsKey(request.getIdCola()) || messageQueueMap.isEmpty(request.getIdCola()))
             return new MensajeProtocolo(Primitiva.EMPTY);
 
+        downloadMessages.incrementAndGet();
         return new MensajeProtocolo(Primitiva.MSG, messageQueueMap.pop(request.getIdCola()));
     }
 
@@ -116,7 +128,8 @@ public class Sirviente implements Runnable {
         if (loggedUser.getStatus() != Status.ADMIN)
             return new MensajeProtocolo(Primitiva.NOTAUTH, Strings.NOT_ADMIN);
 
-        return new MensajeProtocolo(Primitiva.STATE, messageQueueMap.toString());
+        String information = executor.getMaximumPoolSize() + " : " + executor.getActiveCount() + " : " + uploadMessages.get() + " : " + downloadMessages.get();
+        return new MensajeProtocolo(Primitiva.STATE, information);
     }
 
     public MensajeProtocolo replyDeleteQ(MensajeProtocolo request) {

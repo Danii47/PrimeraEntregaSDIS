@@ -9,7 +9,7 @@ import java.net.Socket;
 
 public class Cliente {
     public static final String DEFAULT_HOST = "localhost";
-    public static final int DEFAULT_PORT = 12345;
+    public static final int DEFAULT_PORT = 47014;
 
     private final Socket socket;
     private final ObjectOutputStream out;
@@ -30,7 +30,7 @@ public class Cliente {
         }
 
         if (response.getPrimitiva() == Primitiva.ERROR)
-            throw new WelcomeException("Mensaje de error del servidor: " + response.getMensaje());
+            throw new WelcomeException(response.getMensaje());
 
         if (response.getPrimitiva() != Primitiva.INFO) {
             sendBadCode(response.getPrimitiva());
@@ -69,7 +69,7 @@ public class Cliente {
 
         MensajeProtocolo response = (MensajeProtocolo) in.readObject();
 
-        if (response.getPrimitiva() != Primitiva.ADDMSG && response.getPrimitiva() != Primitiva.NOTAUTH) {
+        if (response.getPrimitiva() != Primitiva.ADDED && response.getPrimitiva() != Primitiva.NOTAUTH && response.getPrimitiva() != Primitiva.ERROR) {
             sendBadCode(response.getPrimitiva());
             throw new UnexpectedResponseException();
         }
@@ -82,7 +82,7 @@ public class Cliente {
 
         MensajeProtocolo response = (MensajeProtocolo) in.readObject();
 
-        if (response.getPrimitiva() != Primitiva.MSG && response.getPrimitiva() != Primitiva.EMPTY) {
+        if (response.getPrimitiva() != Primitiva.MSG && response.getPrimitiva() != Primitiva.EMPTY && response.getPrimitiva() != Primitiva.NOTAUTH && response.getPrimitiva() != Primitiva.ERROR) {
             sendBadCode(response.getPrimitiva());
             throw new UnexpectedResponseException();
         }
@@ -95,7 +95,7 @@ public class Cliente {
 
         MensajeProtocolo response = (MensajeProtocolo) in.readObject();
 
-        if (response.getPrimitiva() != Primitiva.DELETED && response.getPrimitiva() != Primitiva.EMPTY && response.getPrimitiva() != Primitiva.NOTAUTH) {
+        if (response.getPrimitiva() != Primitiva.DELETED && response.getPrimitiva() != Primitiva.EMPTY && response.getPrimitiva() != Primitiva.NOTAUTH && response.getPrimitiva() != Primitiva.ERROR) {
             sendBadCode(response.getPrimitiva());
             throw new UnexpectedResponseException();
         }
@@ -108,7 +108,7 @@ public class Cliente {
 
         MensajeProtocolo response = (MensajeProtocolo) in.readObject();
 
-        if (response.getPrimitiva() != Primitiva.STATE || response.getPrimitiva() != Primitiva.NOTAUTH) {
+        if (response.getPrimitiva() != Primitiva.STATE && response.getPrimitiva() != Primitiva.NOTAUTH && response.getPrimitiva() != Primitiva.ERROR) {
             sendBadCode(response.getPrimitiva());
             throw new UnexpectedResponseException();
         }

@@ -24,7 +24,7 @@ public class AddMsg extends Cliente {
         try {
             AddMsg client = new AddMsg();
 
-            System.out.println("< " + client.waitWelcome().getMensaje());
+            System.out.println("< " + client.waitWelcome().toString());
 
             String name = args[0];
             String message = args[1];

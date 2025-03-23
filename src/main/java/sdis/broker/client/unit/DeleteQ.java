@@ -24,7 +24,7 @@ public class DeleteQ extends Cliente {
         try {
             DeleteQ client = new DeleteQ();
 
-            System.out.println("< " + client.waitWelcome().getMensaje());
+            System.out.println("< " + client.waitWelcome().toString());
 
             String name = args[0];
 

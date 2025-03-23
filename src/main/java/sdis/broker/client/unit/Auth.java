@@ -15,6 +15,7 @@ public class Auth extends Cliente {
         super();
     }
 
+    // user :string, pass :string
     public static void main(String[] args) {
         if (args.length != 2) {
             System.out.println("Use:\njava sdis.broker.client.unit.Auth usuario contraseña");
@@ -29,7 +30,7 @@ public class Auth extends Cliente {
             String user = args[0];
             String password = args[1];
 
-            MensajeProtocolo request = new MensajeProtocolo(associatedPrimitive, password, user);
+            MensajeProtocolo request = new MensajeProtocolo(associatedPrimitive, user, password);
             System.out.println("> " + request);
             MensajeProtocolo response = client.testRequestResponse(request);
             System.out.println("< " + response.toString());

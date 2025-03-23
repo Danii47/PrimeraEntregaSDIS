@@ -1,8 +1,11 @@
 package sdis.broker.common;
 
 public class Strings {
-    public static final String NOT_LOGGED = "Not logged in";
-    public static final String NOT_ADMIN = "Permission denied, not admin";
+    public static final String SERVER_STARTED = "----Server Started----";
+    public static final String SERVER_WAITING_CLIENT = "----Server Waiting For Client----";
+    public static final String CLOSING_SOCKET = "Server: Closing socket";
+    public static final String NOT_LOGGED = "User login is required";
+    public static final String NOT_ADMIN = "NO ADMIN";
     public static final String INVALID_CREDENTIALS = "Err 401 ~ Credentials DO NOT MATCH. Try again";
     public static final String MAX_CONNECTIONS = "Err Max Number of connections reached.";
     public static final String MAX_LOGIN_ATTEMPTS = "Err Max Number of login attempts reached.";
