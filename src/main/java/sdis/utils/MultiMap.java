@@ -50,6 +50,10 @@ public class MultiMap<K, T> {
         return valor;
     }
 
+    public void remove(K clave) {
+        map.remove(clave);
+    }
+
     /**
      * Verifica si una clave existe en el mapa.
      */

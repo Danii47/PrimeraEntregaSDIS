@@ -1,51 +1,128 @@
 package sdis.broker.client;
 
-import sdis.broker.common.MalMensajeProtocoloException;
-import sdis.broker.common.MensajeProtocolo;
-import sdis.broker.common.Primitiva;
+import sdis.broker.common.*;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class Cliente {
-    private static final String SERVER_ADDRESS = "localhost";
-    private static final int SERVER_PORT = 47014;
+    public static final String DEFAULT_HOST = "localhost";
+    public static final int DEFAULT_PORT = 12345;
 
-    public static void main(String[] args) {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
-             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-             BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in))) {
+    private final Socket socket;
+    private final ObjectOutputStream out;
+    private final ObjectInputStream in;
 
+    public Cliente() throws IOException {
+        socket = new Socket(DEFAULT_HOST, DEFAULT_PORT);
+        out = new ObjectOutputStream(socket.getOutputStream());
+        in = new ObjectInputStream(socket.getInputStream());
+    }
 
-            String username, password;
-            MensajeProtocolo connectionMessage;
+    public MensajeProtocolo waitWelcome() throws IOException, ClassNotFoundException {
+        MensajeProtocolo response = (MensajeProtocolo) in.readObject();
 
-            // Mostrar el primer mensaje del servidor
-            connectionMessage = (MensajeProtocolo) in.readObject();
-            if (connectionMessage.getPrimitiva() != Primitiva.INFO || connectionMessage.getMensaje() == null)
-                throw new MalMensajeProtocoloException("Error, primitiva INFO mal formada");
+        if (response == null) {
+            sendBadCode(null);
+            throw new WelcomeException("Mensaje de bienvenida NO recibido.");
+        }
 
-            System.out.println(connectionMessage.getMensaje());
+        if (response.getPrimitiva() == Primitiva.ERROR)
+            throw new WelcomeException("Mensaje de error del servidor: " + response.getMensaje());
 
-            do {
-                username = userInput.readLine();
-                password = userInput.readLine();
+        if (response.getPrimitiva() != Primitiva.INFO) {
+            sendBadCode(response.getPrimitiva());
+            throw new UnexpectedResponseException();
+        }
 
-                connectionMessage = new MensajeProtocolo(Primitiva.XAUTH, username, password);
-                out.writeObject(connectionMessage);
+        return response;
+    }
 
-                // Resolución del servidor
-                connectionMessage = (MensajeProtocolo) in.readObject();
-                System.out.println(connectionMessage.getMensaje());
-            } while (connectionMessage.getPrimitiva() == Primitiva.NOAUTH);
+    public MensajeProtocolo testRequestResponse(MensajeProtocolo request) throws IOException, MalMensajeProtocoloException, ClassNotFoundException {
+        return switch (request.getPrimitiva()) {
+            case XAUTH -> sendXAuth(request);
+            case ADDMSG -> sendAddMsg(request);
+            case READQ -> sendReadQ(request);
+            case DELETEQ -> sendDeleteQ(request);
+            case STATE -> sendState(request);
+            default -> throw new IllegalArgumentException("Primitiva no válida: " + request.getPrimitiva());
+        };
+    }
 
+    public MensajeProtocolo sendXAuth(MensajeProtocolo request) throws IOException, ClassNotFoundException, UnexpectedResponseException {
+        out.writeObject(request);
 
+        MensajeProtocolo response = (MensajeProtocolo) in.readObject();
 
+        if (response.getPrimitiva() != Primitiva.XAUTH && response.getPrimitiva() != Primitiva.NOTAUTH && response.getPrimitiva() != Primitiva.ERROR) {
+            sendBadCode(response.getPrimitiva());
+            throw new UnexpectedResponseException();
+        }
+
+        return response;
+    }
+
+    public MensajeProtocolo sendAddMsg(MensajeProtocolo request) throws IOException, ClassNotFoundException, UnexpectedResponseException {
+        out.writeObject(request);
+
+        MensajeProtocolo response = (MensajeProtocolo) in.readObject();
+
+        if (response.getPrimitiva() != Primitiva.ADDMSG && response.getPrimitiva() != Primitiva.NOTAUTH) {
+            sendBadCode(response.getPrimitiva());
+            throw new UnexpectedResponseException();
+        }
+
+        return response;
+    }
+
+    public MensajeProtocolo sendReadQ(MensajeProtocolo request) throws IOException, ClassNotFoundException, UnexpectedResponseException {
+        out.writeObject(request);
+
+        MensajeProtocolo response = (MensajeProtocolo) in.readObject();
+
+        if (response.getPrimitiva() != Primitiva.MSG && response.getPrimitiva() != Primitiva.EMPTY) {
+            sendBadCode(response.getPrimitiva());
+            throw new UnexpectedResponseException();
+        }
+
+        return response;
+    }
+
+    public MensajeProtocolo sendDeleteQ(MensajeProtocolo request) throws IOException, ClassNotFoundException {
+        out.writeObject(request);
+
+        MensajeProtocolo response = (MensajeProtocolo) in.readObject();
+
+        if (response.getPrimitiva() != Primitiva.DELETED && response.getPrimitiva() != Primitiva.EMPTY && response.getPrimitiva() != Primitiva.NOTAUTH) {
+            sendBadCode(response.getPrimitiva());
+            throw new UnexpectedResponseException();
+        }
+
+        return response;
+    }
+
+    public MensajeProtocolo sendState(MensajeProtocolo request) throws IOException, ClassNotFoundException {
+        out.writeObject(request);
+
+        MensajeProtocolo response = (MensajeProtocolo) in.readObject();
+
+        if (response.getPrimitiva() != Primitiva.STATE || response.getPrimitiva() != Primitiva.NOTAUTH) {
+            sendBadCode(response.getPrimitiva());
+            throw new UnexpectedResponseException();
+        }
+
+        return response;
+    }
+
+    public void sendBadCode(Primitiva receivePrimitive) {
+        MensajeProtocolo badCodeResponse = new MensajeProtocolo(Primitiva.BADCODE, "Mensaje no esperado, recibido: " + ((receivePrimitive == null) ? "null" : receivePrimitive.toString()));
+
+        try {
+            out.writeObject(badCodeResponse);
         } catch (IOException e) {
-            System.err.println("Error en el cliente: " + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            System.err.println("Error en la clase: " + e.getMessage());
+            System.out.println("Ocurrió un error al enviar el BadCode al servidor");
         }
     }
 }

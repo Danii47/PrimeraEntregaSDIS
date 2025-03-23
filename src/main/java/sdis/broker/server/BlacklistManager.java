@@ -11,13 +11,16 @@ public class BlacklistManager {
     }
 
     // Registrar un intento fallido o conexión
-    public int registerAttempt(String ip) {
+    public int registerAttempt(String ip) throws IllegalStateException {
+        if (attemptsMap.getOrDefault(ip, 0) >= maxAttempts)
+            throw new IllegalStateException("Intentos máximos de /" + ip + " superados: " + attemptsMap);
+
         attemptsMap.merge(ip, 1, Integer::sum);
         return attemptsMap.getOrDefault(ip, 0);
     }
 
     public int unregisterAttempt(String ip) {
-        attemptsMap.computeIfPresent(ip, (_, value) -> value > 0 ? value - 1 : 0);
+        attemptsMap.computeIfPresent(ip, (f, value) -> value > 0 ? value - 1 : 0);
         return attemptsMap.getOrDefault(ip, 0);
     }
 

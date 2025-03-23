@@ -14,7 +14,7 @@ public enum Primitiva {
                 // S→C: Servidor devuelve información administrativa solicitada
     DELETEQ,    // C→S: Cliente solicita borrar una cola, requiere permisos ADMIN
     DELETED,    // S→C: Confirma que se ha eliminado una cola con éxito
-    NOAUTH,     // S→C: Error de autenticación o permisos insuficientes
+    NOTAUTH,     // S→C: Error de autenticación o permisos insuficientes
     ERROR,      // S→C: Error genérico del sistema (conexiones máximas, blacklist)
     BADCODE;    // C→S: Cliente envía código incorrecto en el protocolo
                 // S→C: Servidor indica que se recibió un intercambio ilegal de primitivas

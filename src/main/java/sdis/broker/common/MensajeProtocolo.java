@@ -13,7 +13,7 @@ public class MensajeProtocolo implements Serializable {
         if (primitiva == null) {
             throw new MalMensajeProtocoloException("Primitiva no puede ser null");
         }
-        if (!ClientPrimitives.PRIMITIVES_0_ARGS.contains(primitiva) || !ServidorPrimitives.PRIMITIVES_0_ARGS.contains(primitiva)) {
+        if (!ClientPrimitives.PRIMITIVES_0_ARGS.contains(primitiva) && !ServidorPrimitives.PRIMITIVES_0_ARGS.contains(primitiva)) {
             throw new MalMensajeProtocoloException("Primitiva " + primitiva + " no es válida");
         }
 
@@ -22,7 +22,7 @@ public class MensajeProtocolo implements Serializable {
         this.mensaje = null;
     }
 
-    // READQ, DELETEQ, BADCODE, XAUTH, MSG, BADCODE, STATE y NOAUTH, ERROR
+    // READQ, DELETEQ, BADCODE, XAUTH, MSG, BADCODE, STATE y NOTAUTH, ERROR
     public MensajeProtocolo(Primitiva primitiva, String mensaje) throws MalMensajeProtocoloException {
 
         if (primitiva == null) {
@@ -31,7 +31,7 @@ public class MensajeProtocolo implements Serializable {
         if (mensaje == null) {
             throw new MalMensajeProtocoloException("Mensaje no puede ser null");
         }
-        if (!ClientPrimitives.PRIMITIVES_1_ARGS.contains(primitiva) || !ServidorPrimitives.PRIMITIVES_1_ARGS.contains(primitiva)) {
+        if (!ClientPrimitives.PRIMITIVES_1_ARGS.contains(primitiva) && !ServidorPrimitives.PRIMITIVES_1_ARGS.contains(primitiva)) {
             throw new MalMensajeProtocoloException("Primitiva " + primitiva + " no es válida");
         }
 
@@ -43,18 +43,18 @@ public class MensajeProtocolo implements Serializable {
     // XAUTH y ADDMSG
     public MensajeProtocolo(Primitiva primitiva, String mensaje, String idCola) throws MalMensajeProtocoloException {
 
-        if (primitiva == null) {
+        if (primitiva == null)
             throw new MalMensajeProtocoloException("Primitiva no puede ser null");
-        }
-        if (mensaje == null) {
+
+        if (mensaje == null)
             throw new MalMensajeProtocoloException("Mensaje no puede ser null");
-        }
-        if (idCola == null) {
+
+        if (idCola == null)
             throw new MalMensajeProtocoloException("idCola no puede ser null");
-        }
-        if (!ClientPrimitives.PRIMITIVES_2_ARGS.contains(primitiva)) {
+
+        if (!ClientPrimitives.PRIMITIVES_2_ARGS.contains(primitiva))
             throw new MalMensajeProtocoloException("Primitiva " + primitiva + " no es válida");
-        }
+
 
         this.primitiva = primitiva;
         this.mensaje = mensaje;
@@ -72,5 +72,15 @@ public class MensajeProtocolo implements Serializable {
 
     public String getMensaje() {
         return mensaje;
+    }
+
+    @Override
+    public String toString() {
+        return switch (primitiva) {
+            case MSG, STATE, NOTAUTH, ERROR, BADCODE -> primitiva + ":" + mensaje;
+            case READQ, DELETEQ -> primitiva + ":" + idCola;
+            case XAUTH, ADDMSG -> primitiva + ":" + idCola + ":" + mensaje;
+            default -> this.primitiva.toString();
+        };
     }
 }
