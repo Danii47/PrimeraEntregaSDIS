@@ -1,4 +1,4 @@
-package sdis.broker.common;
+package sdis.broker.common.customexceptions;
 
 public class WelcomeException extends RuntimeException {
     public WelcomeException(String message) {

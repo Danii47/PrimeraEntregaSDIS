@@ -1,6 +1,9 @@
 package sdis.broker.client;
 
 import sdis.broker.common.*;
+import sdis.broker.common.customexceptions.MalMensajeProtocoloException;
+import sdis.broker.common.customexceptions.UnexpectedResponseException;
+import sdis.broker.common.customexceptions.WelcomeException;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -41,14 +44,20 @@ public class Cliente {
     }
 
     public MensajeProtocolo testRequestResponse(MensajeProtocolo request) throws IOException, MalMensajeProtocoloException, ClassNotFoundException {
-        return switch (request.getPrimitiva()) {
-            case XAUTH -> sendXAuth(request);
-            case ADDMSG -> sendAddMsg(request);
-            case READQ -> sendReadQ(request);
-            case DELETEQ -> sendDeleteQ(request);
-            case STATE -> sendState(request);
-            default -> throw new IllegalArgumentException("Primitiva no válida: " + request.getPrimitiva());
-        };
+        switch (request.getPrimitiva()) {
+            case XAUTH:
+                return sendXAuth(request);
+            case ADDMSG:
+                return sendAddMsg(request);
+            case READQ:
+                return sendReadQ(request);
+            case DELETEQ:
+                return sendDeleteQ(request);
+            case STATE:
+                return sendState(request);
+            default:
+                throw new IllegalArgumentException("Primitiva no válida: " + request.getPrimitiva());
+        }
     }
 
     public MensajeProtocolo sendXAuth(MensajeProtocolo request) throws IOException, ClassNotFoundException, UnexpectedResponseException {

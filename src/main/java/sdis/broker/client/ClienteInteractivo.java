@@ -1,10 +1,12 @@
 package sdis.broker.client;
 
-import sdis.broker.common.MalMensajeProtocoloException;
+import sdis.broker.common.customexceptions.MalMensajeProtocoloException;
 import sdis.broker.common.MensajeProtocolo;
 import sdis.broker.common.Primitiva;
+import sdis.broker.common.customexceptions.WelcomeException;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ClienteInteractivo extends Cliente {
@@ -60,9 +62,13 @@ public class ClienteInteractivo extends Cliente {
             }
 
         } catch (IOException e) {
-            System.err.println("Error de E/S en los objetos.\n" + e.getMessage());
+            System.err.println("Conexión con el servidor perdida.\n" + e.getMessage());
         } catch (ClassNotFoundException e) {
             System.out.println("Error al convertir el objeto recibido en MensajeProtocolo.\n" + e.getMessage());
+        } catch (WelcomeException e) {
+            System.err.println(e.getMessage());
+        } catch (NoSuchElementException e) {
+            System.err.println("Saliendo del cliente CTRL-C...");
         }
     }
 }

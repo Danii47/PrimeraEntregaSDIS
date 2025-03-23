@@ -3,10 +3,8 @@ package sdis.broker.client.unit;
 import sdis.broker.client.Cliente;
 import sdis.broker.common.Primitiva;
 import sdis.broker.common.MensajeProtocolo;
-import sdis.broker.common.MalMensajeProtocoloException;
 
 import java.io.IOException;
-import java.net.Socket;
 
 public class State extends Cliente {
     public static final Primitiva associatedPrimitive = Primitiva.STATE;
@@ -15,6 +13,7 @@ public class State extends Cliente {
         super();
     }
 
+    // no arguments
     public static void main(String[] args) {
         if (args.length != 0) {
             System.out.println("Use:\njava sdis.broker.client.unit.State");

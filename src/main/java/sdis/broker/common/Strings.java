@@ -18,6 +18,10 @@ public class Strings {
         return String.format("[BM] (connections) for IP /%s = %d", clientIP, connectionCounter);
     }
 
+    public static String MAX_CONNECTIONS_REACHED(String clientIP) {
+        return String.format("[BM] (connections) for IP /%s exceeded maximum connections. Error sent and connection closed.", clientIP);
+    }
+
     public static String LOGIN_FAILS(String clientIP, int actualAttempts) {
         return String.format("[BM] (login fails) for IP /%s = %d", clientIP, actualAttempts);
     }

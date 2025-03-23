@@ -70,7 +70,7 @@ public class Servidor {
 
                             clientSocket.close();
 
-                            System.out.println("[BM] (connections) for IP /" + clientIP + " exceeded maximum attempts. Error sent and connection closed.");
+                            System.out.println(Strings.MAX_CONNECTIONS_REACHED(clientIP));
                         }
 
                     }

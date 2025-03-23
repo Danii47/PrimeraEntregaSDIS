@@ -3,10 +3,8 @@ package sdis.broker.client.unit;
 import sdis.broker.client.Cliente;
 import sdis.broker.common.Primitiva;
 import sdis.broker.common.MensajeProtocolo;
-import sdis.broker.common.MalMensajeProtocoloException;
 
 import java.io.IOException;
-import java.net.Socket;
 
 public class ReadQ extends Cliente {
     public static final Primitiva associatedPrimitive = Primitiva.READQ;
@@ -15,6 +13,7 @@ public class ReadQ extends Cliente {
         super();
     }
 
+    // key :string
     public static void main(String[] args) {
         if (args.length != 1) {
             System.out.println("Use:\njava sdis.broker.client.unit.ReadQ clave");

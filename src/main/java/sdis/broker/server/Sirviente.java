@@ -70,14 +70,20 @@ public class Sirviente implements Runnable {
     }
 
     public MensajeProtocolo getResponse(MensajeProtocolo request) {
-        return switch (request.getPrimitiva()) {
-            case XAUTH -> replyXAuth(request);
-            case ADDMSG -> replyAddMsg(request);
-            case READQ -> replyReadQ(request);
-            case STATE -> replyState();
-            case DELETEQ -> replyDeleteQ(request);
-            default -> replyBadCode(request);
-        };
+        switch (request.getPrimitiva()) {
+            case XAUTH:
+                return replyXAuth(request);
+            case ADDMSG:
+                return replyAddMsg(request);
+            case READQ:
+                return replyReadQ(request);
+            case STATE:
+                return replyState();
+            case DELETEQ:
+                return replyDeleteQ(request);
+            default:
+                return replyBadCode(request);
+        }
     }
 
     public MensajeProtocolo replyXAuth(MensajeProtocolo request) {

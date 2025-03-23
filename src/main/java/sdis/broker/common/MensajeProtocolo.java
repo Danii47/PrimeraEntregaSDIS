@@ -1,5 +1,7 @@
 package sdis.broker.common;
 
+import sdis.broker.common.customexceptions.MalMensajeProtocoloException;
+
 import java.io.Serializable;
 
 public class MensajeProtocolo implements Serializable {
@@ -81,11 +83,21 @@ public class MensajeProtocolo implements Serializable {
 
     @Override
     public String toString() {
-        return switch (primitiva) {
-            case MSG, STATE, NOTAUTH, ERROR, BADCODE -> primitiva + ":" + mensaje;
-            case READQ, DELETEQ -> primitiva + ":" + idCola;
-            case XAUTH, ADDMSG -> primitiva + ":" + idCola + ":" + mensaje;
-            default -> this.primitiva.toString();
-        };
+        switch (primitiva) {
+            case MSG:
+            case STATE:
+            case NOTAUTH:
+            case ERROR:
+            case BADCODE:
+                return primitiva + ":" + mensaje;
+            case READQ:
+            case DELETEQ:
+                return primitiva + ":" + idCola;
+            case XAUTH:
+            case ADDMSG:
+                return primitiva + ":" + idCola + ":" + mensaje;
+            default:
+                return this.primitiva.toString();
+        }
     }
 }

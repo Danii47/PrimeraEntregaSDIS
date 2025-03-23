@@ -3,10 +3,8 @@ package sdis.broker.client.unit;
 import sdis.broker.client.Cliente;
 import sdis.broker.common.Primitiva;
 import sdis.broker.common.MensajeProtocolo;
-import sdis.broker.common.MalMensajeProtocoloException;
 
 import java.io.IOException;
-import java.net.Socket;
 
 public class Auth extends Cliente {
     public static final Primitiva associatedPrimitive = Primitiva.XAUTH;
