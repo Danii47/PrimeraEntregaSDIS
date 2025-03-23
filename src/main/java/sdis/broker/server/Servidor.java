@@ -64,13 +64,17 @@ public class Servidor {
                             executor.execute(sirviente);
 
                         } catch (IllegalStateException e) {
-                            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-                            MensajeProtocolo response = new MensajeProtocolo(Primitiva.ERROR, Strings.MAX_CONNECTIONS);
-                            out.writeObject(response);
+                            try {
+                                ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+                                MensajeProtocolo response = new MensajeProtocolo(Primitiva.ERROR, Strings.MAX_CONNECTIONS);
+                                out.writeObject(response);
 
-                            clientSocket.close();
-
-                            System.out.println(Strings.MAX_CONNECTIONS_REACHED(clientIP));
+                            } catch (IOException error) {
+                                System.out.println("Error E/S al enviar error.");
+                            } finally {
+                                clientSocket.close();
+                                System.out.println(Strings.MAX_CONNECTIONS_REACHED(clientIP));
+                            }
                         }
 
                     }

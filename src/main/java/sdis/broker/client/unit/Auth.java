@@ -34,12 +34,12 @@ public class Auth extends Cliente {
             MensajeProtocolo response = client.testRequestResponse(request);
             System.out.println("< " + response.toString());
 
+        } catch (WelcomeException e) {
+            System.err.println(e.getMessage());
         } catch (IOException e) {
             System.err.println("Error de E/S en los objetos.\n" + e.getMessage());
         } catch (ClassNotFoundException e) {
             System.err.println("Error al convertir el objeto recibido en MensajeProtocolo.\n" + e.getMessage());
-        } catch (WelcomeException e) {
-            System.err.println(e.getMessage());
         }
     }
 }
